@@ -1,20 +1,38 @@
 #!/usr/bin/env python3
 #networkFileRW.py
 #Pamela Brauda
-#Thursday, November 16, 2023
+#Thursday, March 3, 2022
 #Update routers and switches;
 #read equipment from a file, write updates & errors to file
 
+
+
+#I tried asking for help twice, however I never got a response, this code is not working properly
+#Every time I try to have the dictionary be printed however, I get this error meassge "   print ("\t" + (switches) + "\t\t" + ipa)TypeError: can only concatenate str (not "dict") to str"
+#When I fix this error by converting it to a string it won't let me access the dictionary it prints the error message.
+
+
 ##---->>>> Use a try/except clause to import the JSON module
 
+try:
+    import equip_r.txt
+    import equip_s.txt
+    import updated.txt
+    import invalid.txt
+except ModuleNotFoundError: print("One of the Files Not Found")
+     
 
+    
 
 ##---->>>> Create file constants for the file names; file constants can be reused
 ##         There are 2 files to read this program: equip_r.txt and equip_s.txt
 ##         There are 2 files to write in this program: updated.txt and errors.txt
-      
 
 
+FILENAME0 = 'equip_r.txt'
+FILENAME1 = 'equip_s.txt'
+FILENAME2 = 'updated.txt'
+FILENAME3 = 'invalid.txt'
 
 
 #prompt constants
@@ -22,6 +40,7 @@ UPDATE = "\nWhich device would you like to update "
 QUIT = "(enter x to quit)? "
 NEW_IP = "What is the new IP address (111.111.111.111) "
 SORRY = "Sorry, that is not a valid IP address\n"
+
 
 #function to get valid device
 def getValidDevice(routers, switches):
@@ -59,22 +78,28 @@ def getValidIP(invalidIPCount, invalidIPAddresses):
         
 def main():
 
-    ##---->>>> open files here
-
-
-
+    ##---->>>> open files here 
     
     #dictionaries
     ##---->>>> read the routers and addresses into the router dictionary
+    with open(FILENAME0) as f:
+      contents1 = f.read()
+      print(contents1) #placeholder to tell wether 'equip_r.txt' is imported since python reads line by line
 
     routers = {}
 
 
     ##---->>>> read the switches and addresses into the switches dictionary
+    from ast import literal_eval
+    with open("equip_s.txt") as file:
+        contents2 = file.read()
+        switches = {}
+        switches[contents2] = switches
 
-    switches = {}
-
-
+     
+   
+  
+      
     #the updated dictionary holds the device name and new ip address
     updated = {}
 
@@ -94,8 +119,14 @@ def main():
     for router, ipa in routers.items(): 
         print("\t" + router + "\t\t" + ipa)
     for switch, ipa in switches.items():
-        print("\t" + switch + "\t\t" + ipa)
+       print("\t" + str(switches) + "\t\t" + ipa)
+       switches = literal_eval(switches)
+       print(switches)
 
+
+
+
+       
     while not quitNow:
 
         #function call to get valid device
@@ -131,6 +162,8 @@ def main():
     print("Number of devices updated:", devicesUpdatedCount)
 
     ##---->>>> write the updated equipment dictionary to a file
+    with open(FILENAME2, 'w') as f:
+        f.write(updated)
 
     
     print("Updated equipment written to file 'updated.txt'")
@@ -138,6 +171,9 @@ def main():
     print("\nNumber of invalid addresses attempted:", invalidIPCount)
 
     ##---->>>> write the list of invalid addresses to a file
+    with open(FILENAME3, 'w') as f:
+        f.write(invalidIPAddressses)
+
     
 
     print("List of invalid addresses written to file 'errors.txt'")
@@ -145,6 +181,7 @@ def main():
 #top-level scope check
 if __name__ == "__main__":
     main()
+
 
 
 
